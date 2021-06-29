@@ -19,16 +19,21 @@ use AmoCRM\Models\CustomFieldsValues\ValueModels\RadiobuttonCustomFieldValueMode
 class Contact extends ContactModel
 {
 
+    public const FIELD_CODE_PHONE = 'PHONE';
+    public const ENUM_WORK = 'WORK';
+    const FIELD_CODE_EMAIL = 'EMAIL';
+
     public function __construct(string $name, string $lastname)
     {
         $this->setName($name . ' ' . $lastname);
     }
 
-    public function setPhone(string $phone, string $enum = 'WORK'): Contact
+
+    public function setPhone(string $phone, string $enum = self::ENUM_WORK): Contact
     {
         $this->addCustomFieldValue(
             (new MultitextCustomFieldValuesModel())
-                ->setFieldCode('PHONE')
+                ->setFieldCode(self::FIELD_CODE_PHONE)
                 ->setValues(
                     (new MultitextCustomFieldValueCollection())
                         ->add(
@@ -42,11 +47,11 @@ class Contact extends ContactModel
         return $this;
     }
 
-    public function setEmail(string $email, string $enum = 'WORK'): Contact
+    public function setEmail(string $email, string $enum = self::ENUM_WORK): Contact
     {
         $this->addCustomFieldValue(
             (new MultitextCustomFieldValuesModel())
-                ->setFieldCode('EMAIL')
+                ->setFieldCode(self::FIELD_CODE_EMAIL)
                 ->setValues(
                     (new MultitextCustomFieldValueCollection())
                         ->add(

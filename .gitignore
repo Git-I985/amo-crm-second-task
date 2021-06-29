@@ -7,5 +7,7 @@
 /public/bundles/
 /var/
 /vendor/
-/.idea/*
+/.idea/
+/.env
+/token.json
 ###< symfony/framework-bundle ###

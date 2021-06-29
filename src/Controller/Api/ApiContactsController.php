@@ -1,9 +1,5 @@
 <?php
 
-// TODO: инкапсуляция линки контакта с сделкой
-// TODO: повесить задачу на сделку
-// TODO: линка товара с сделкой
-
 namespace App\Controller\Api;
 
 use AmoCRM\Collections\LinksCollection;
