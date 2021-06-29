@@ -3,9 +3,13 @@
 namespace App\Controller\Api;
 
 use AmoCRM\Collections\LinksCollection;
+use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMApiNoContentException;
+use AmoCRM\Exceptions\AmoCRMMissedTokenException;
+use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Filters\ContactsFilter;
 use AmoCRM\Filters\LeadsFilter;
+use AmoCRM\Models\LeadModel;
 use App\Services\AmoManager;
 use App\Services\Entities\Contact;
 use Rakit\Validation\Validation;
@@ -64,6 +68,7 @@ class ApiContactsController extends AbstractController
 
     /**
      * @Route("/contacts", name="contacts", methods={"POST"})
+     * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
     public function create(Request $request): Response
     {
@@ -92,23 +97,24 @@ class ApiContactsController extends AbstractController
 
         // Если такой контакт уже есть, смотрим его сделки
         if (isset($contacts)) {
-            $contact = $contacts->all()[0];
-
             $lead = $this
                 ->amoManager
                 ->apiClient
                 ->leads()
                 ->get((new LeadsFilter())->setQuery($params['tel']))->all()[0];
 
+            switch ($lead->getStatusId()) {
+                case LeadModel::WON_STATUS_ID:
+                    $msg = 'Пользователь с такими номером уже существует, сделка в успешном статусе';
+                    break;
+                default:
+                    $msg = 'Пользователь с такими номером уже существует';
+            }
+
             $session = new Session();
             $session->start();
 
-
-            if ($lead->getStatusId() === 142) {
-                $session->getFlashBag()->add('error', 'Пользователь с такими номером уже существует, сделка в успешном статусе');
-            } else {
-                $session->getFlashBag()->add('error', 'Пользователь с такими номером уже существует');
-            }
+            $session->getFlashBag()->add('error', $msg);
 
             return $this->redirect($this->generateUrl('index'));
         }
