@@ -1,132 +1,126 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Создание нового контакта</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <style>
+{% extends 'base.html.twig' %}
 
-        html {
-            --color: #29b6f6;
-        }
+{% block title %}Создание нового контакта{% endblock %}
 
-        /* label focus color */
-        .input-field input:not([type="submit"]):focus + label {
-            color: var(--color) !important;
-        }
+{% block style %}
+html {
+    --color: #29b6f6;
+}
 
-        /* label underline focus color */
-        .input-field input:not([type="submit"]):focus {
-            border-bottom: 1px solid var(--color) !important;
-            box-shadow: 0 1px 0 0 var(--color) !important;
-        }
+/* label focus color */
+.input-field input:not([type="submit"]):focus + label {
+    color: var(--color) !important;
+}
 
-        [type="radio"]:checked + span:after,
-        [type="radio"].with-gap:checked + span:before,
-        [type="radio"].with-gap:checked + span:after {
-            border: 2px solid var(--color);
-        }
+/* label underline focus color */
+.input-field input:not([type="submit"]):focus {
+    border-bottom: 1px solid var(--color) !important;
+    box-shadow: 0 1px 0 0 var(--color) !important;
+}
 
-        [type="radio"]:checked + span:after, [type="radio"].with-gap:checked + span:after {
-            background-color: var(--color);
-        }
+[type="radio"]:checked + span:after,
+[type="radio"].with-gap:checked + span:before,
+[type="radio"].with-gap:checked + span:after {
+    border: 2px solid var(--color);
+}
 
-        .container {
-            margin-top: 50px;
-        }
+[type="radio"]:checked + span:after, [type="radio"].with-gap:checked + span:after {
+    background-color: var(--color);
+}
 
-        .col.s12 > .btn {
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
+.container {
+    margin-top: 50px;
+}
 
-<div class="container row">
-    <form action="{{ path('api_contacts') }}" method="POST" class="col s12 l8 offset-l2">
+.col.s12 > .btn {
+    width: 100%;
+}
+{% endblock %}
 
-        <div class="row">
-            <div class="col s12">
-                <h4 class="light">Создание нового контакта</h4>
+{% block body %}
+    <div class="container row">
+        <form action="{{ path('api_contacts') }}" method="POST" class="col s12 l8 offset-l2">
+
+            <div class="row">
+                <div class="col s12">
+                    <h4 class="light">Создание нового контакта</h4>
+                </div>
             </div>
-        </div>
 
 
-        <div class="row">
-            <div class="input-field col s12 l6">
-                <input type="text" name="name" required>
-                <label>Имя</label>
+            <div class="row">
+                <div class="input-field col s12 l6">
+                    <input type="text" name="name" required>
+                    <label>Имя</label>
+                </div>
+                <div class="input-field col s12 l6">
+                    <input type="text" name="lastname" required>
+                    <label>Фамилия</label>
+                </div>
             </div>
-            <div class="input-field col s12 l6">
-                <input type="text" name="lastname" required>
-                <label>Фамилия</label>
+
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="number" name="age" required>
+                    <label>Возраст</label>
+                </div>
             </div>
-        </div>
 
 
-        <div class="row">
-            <div class="input-field col s12">
-                <input type="number" name="age" required>
-                <label>Возраст</label>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" name="tel" required>
+                    <label>Телефон</label>
+                </div>
             </div>
-        </div>
 
 
-        <div class="row">
-            <div class="input-field col s12">
-                <input type="text" name="tel" required>
-                <label>Телефон</label>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="email" name="email" required>
+                    <label>Email</label>
+                </div>
             </div>
-        </div>
 
 
-        <div class="row">
-            <div class="input-field col s12">
-                <input type="email" name="email" required>
-                <label>Email</label>
+            <div class="row">
+                <div class="col s12 m4 l3">
+                    <label>
+                        <input class="with-gap" name="gender" type="radio" checked value="Мужской" required/>
+                        <span>Мужчина</span>
+                    </label>
+                </div>
+                <div class="col s12 m4 l3">
+                    <label>
+                        <input class="with-gap" name="gender" type="radio" value="Женский" required/>
+                        <span>Женщина</span>
+                    </label>
+                </div>
             </div>
-        </div>
 
+            <div class="row">
+                <div class="col s12">
+                    {% for error in app.flashes('error') %}
+                        <p class="red-text accent-4">{{ error }}</p>
+                    {% endfor %}
+                    {% for msg in app.flashes('success') %}
+                        <p class="green-text lighten-4">
+                            {{ msg }}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
 
-        <div class="row">
-            <div class="col s12 m4 l3">
-                <label>
-                    <input class="with-gap" name="gender" type="radio" checked value="Мужской" required/>
-                    <span>Мужчина</span>
-                </label>
+            <div class="row">
+                <div class="input-field col s12">
+                    <button type="submit" class="btn waves-effect light-blue accent-4">Добавить контакт</button>
+                </div>
             </div>
-            <div class="col s12 m4 l3">
-                <label>
-                    <input class="with-gap" name="gender" type="radio" value="Женский" required/>
-                    <span>Женщина</span>
-                </label>
-            </div>
-        </div>
+        </form>
+    </div>
+{% endblock %}
 
-        <div class="row">
-            <div class="col s12">
-                {% for error in app.flashes('error') %}
-                    <p class="red-text accent-4">{{ error }}</p>
-                {% endfor %}
-                {% for msg in app.flashes('success') %}
-                    <p class="green-text lighten-4">
-                        {{ msg }}
-                    </p>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="input-field col s12">
-                <button type="submit" class="btn waves-effect light-blue accent-4">Добавить контакт</button>
-            </div>
-        </div>
-    </form>
-</div>
-<!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-</body>
-</html>
+{% block js %}
+    {{ parent() }}
+{% endblock %}
