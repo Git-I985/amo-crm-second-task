@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Services\Entities;
-
+namespace App\Entities;
 
 use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Models\ContactModel;
@@ -15,19 +14,19 @@ use AmoCRM\Models\CustomFieldsValues\ValueCollections\RadiobuttonCustomFieldValu
 use AmoCRM\Models\CustomFieldsValues\ValueModels\MultitextCustomFieldValueModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\NumericCustomFieldValueModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\RadiobuttonCustomFieldValueModel;
+use App\Services\AmoManager;
 
 class Contact extends ContactModel
 {
 
     public const FIELD_CODE_PHONE = 'PHONE';
     public const ENUM_WORK = 'WORK';
-    const FIELD_CODE_EMAIL = 'EMAIL';
+    public const FIELD_CODE_EMAIL = 'EMAIL';
 
     public function __construct(string $name, string $lastname)
     {
         $this->setName($name . ' ' . $lastname);
     }
-
 
     public function setPhone(string $phone, string $enum = self::ENUM_WORK): Contact
     {
@@ -115,5 +114,10 @@ class Contact extends ContactModel
 
         return $this;
     }
+
+    public function getByQuery(string $query)
+    {
+    }
+
 
 }
