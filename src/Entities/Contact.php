@@ -14,7 +14,8 @@ use AmoCRM\Models\CustomFieldsValues\ValueCollections\RadiobuttonCustomFieldValu
 use AmoCRM\Models\CustomFieldsValues\ValueModels\MultitextCustomFieldValueModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\NumericCustomFieldValueModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\RadiobuttonCustomFieldValueModel;
-use App\Services\AmoManager;
+use Rakit\Validation\Validation;
+use Rakit\Validation\Validator;
 
 class Contact extends ContactModel
 {
@@ -23,9 +24,13 @@ class Contact extends ContactModel
     public const ENUM_WORK = 'WORK';
     public const FIELD_CODE_EMAIL = 'EMAIL';
 
-    public function __construct(string $name, string $lastname)
+    public function __construct(array $fields)
     {
-        $this->setName($name . ' ' . $lastname);
+        $this->setName($fields['name'] . ' ' . $fields['lastname'])
+             ->setPhone($fields['tel'])
+             ->setEmail($fields['email'])
+             ->setGender($fields['gender'])
+             ->setAge($fields['age']);
     }
 
     public function setPhone(string $phone, string $enum = self::ENUM_WORK): Contact
@@ -104,20 +109,48 @@ class Contact extends ContactModel
 
         if ( ! is_null($existingCustomFieldsValues)) {
             $existingCustomFieldsValues->add($model);
-
-            return $this;
+        } else {
+            $customFieldsValues = new CustomFieldsValuesCollection();
+            $customFieldsValues->add($model);
+            $this->setCustomFieldsValues($customFieldsValues);
         }
-
-        $customFieldsValues = new CustomFieldsValuesCollection();
-        $customFieldsValues->add($model);
-        $this->setCustomFieldsValues($customFieldsValues);
 
         return $this;
     }
 
-    public function getByQuery(string $query)
+
+    public static function validate(array $contactFields): Validation
     {
+        $validator = new Validator();
+
+        $validator->setMessages(
+            [
+                "required" => ":attribute должен быть указан",
+                "name"     => "Неккоректное имя пользователя",
+                "lastname" => "Неккоректная фамилия пользователя",
+                "email"    => "Некорректный email адрес",
+                "age"      => "Некорректный возраст",
+                "tel"      => "Некорректный номер телефона",
+                "gender"   => "Указан некорректный пол",
+            ]
+        );
+
+        return $validator->validate(
+            $contactFields,
+            [
+                "name"     => "required|regex:/^[a-zа-я]+$/ui",
+                "lastname" => "required|regex:/^[a-zа-я]+$/ui",
+                "age"      => "required|integer|between:18,125",
+                "tel"      => [
+                    "required",
+                    $validator('regex', "/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/"),
+                ],
+                "email"    => "required|email",
+                "gender"   => [
+                    "required",
+                    $validator("regex", "/^(Мужской|Женский)$/u"),
+                ],
+            ]
+        );
     }
-
-
 }
