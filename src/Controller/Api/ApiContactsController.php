@@ -179,7 +179,7 @@ class ApiContactsController extends AbstractController
             $session->start();
             $session->getFlashBag()->add(
                 'error',
-                'Ошибка добавления товаров к сделке, возможно каталог товаров  отсутсвует или пуст'
+                'Ошибка добавления товаров к сделке, возможно каталог товаров пуст или отсутсвует'
             );
 
             return $this->redirect($request->headers->get('referer'));
